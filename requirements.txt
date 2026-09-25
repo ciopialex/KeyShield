@@ -1,0 +1,5 @@
+# KeyShield Dependencies
+numpy>=1.24.0
+onnxruntime>=1.16.0
+sounddevice>=0.4.6
+PyQt6>=6.5.0
