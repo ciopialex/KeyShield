@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <radialGradient id="shieldGlow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#389E62" stop-opacity="0.30"/>
+      <stop offset="60%" stop-color="#2E8B57" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="shieldBorder" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#389E62"/>
+      <stop offset="50%" stop-color="#2E8B57" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0A84FF" stop-opacity="0.25"/>
+    </linearGradient>
+    <linearGradient id="facetHighlight" x1="30" y1="20" x2="60" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Radiant Halo -->
+  <circle cx="60" cy="58" r="50" fill="url(#shieldGlow)"/>
+
+  <!-- Outer Protective Armor Contour -->
+  <path d="M60 16L94 28.5C94 62 80 89 60 102C40 89 26 62 26 28.5L60 16Z" 
+        fill="#0D110F" 
+        stroke="url(#shieldBorder)" 
+        stroke-width="2.5" 
+        stroke-linejoin="round"/>
+
+  <!-- Chamfered Facet Highlight (Physical Machined Depth) -->
+  <path d="M60 19L91 30.5C91 58 79 83 60 97V19Z" fill="url(#facetHighlight)"/>
+
+  <!-- Inner Neural Core Aperture -->
+  <path d="M60 32L78 40C78 61 70 77 60 84C50 77 42 61 42 40L60 32Z" 
+        fill="#070908" 
+        stroke="#389E62" 
+        stroke-width="1.2" 
+        stroke-opacity="0.6"/>
+
+  <!-- Center Waveform Spine (Vocal Resonance Gateway) -->
+  <line x1="60" y1="46" x2="60" y2="70" stroke="#389E62" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="53" y1="51" x2="53" y2="65" stroke="#389E62" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
+  <line x1="67" y1="51" x2="67" y2="65" stroke="#389E62" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
+  <line x1="47" y1="55" x2="47" y2="61" stroke="#389E62" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
+  <line x1="73" y1="55" x2="73" y2="61" stroke="#389E62" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
+</svg>

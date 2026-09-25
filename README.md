@@ -54,47 +54,28 @@ Whether from background apps, browser tabs running malicious WebRTC scripts, com
 
 ---
 
-## 📦 Installation & Setup
+## 📦 1-Click Installers (Download & Run)
 
-### 🖱️ 1-Click Graphical Setup Assistant (Recommended)
-If you prefer a clean graphical wizard without touching terminal commands:
-```bash
-python3 setup_gui.py
-```
-*(Or double-click the `KeyShield-Setup` executable)*. A Steve Jobs-style setup window opens, detects your audio system, sets up autostart, and installs or uninstalls KeyShield with a single click.
+Users can simply clone or download the repository and double-click their platform installer:
 
----
+### 🍏 Linux & macOS
+* **Install:** Double-click or run:
+  ```bash
+  ./installer_linux_mac.sh
+  # or ./installer_linux\&mac.sh
+  ```
+* **Uninstall:** Double-click or run:
+  ```bash
+  ./uninstaller_linux_mac.sh
+  # or ./uninstaller_linux\&mac.sh
+  ```
 
-### 💻 Terminal Installation (CLI)
+### 🪟 Windows
+* **Install:** Double-click `installer_windows.bat` in File Explorer.
+* **Uninstall:** Double-click `uninstaller_windows.bat` in File Explorer.
 
-#### Linux & macOS
-Run the automated installer:
-```bash
-git clone https://github.com/ciopialex/KeyShield.git
-cd KeyShield
-chmod +x install.sh
-./install.sh
-```
-* **Linux:** Automatically mounts `KeyShield (Acoustic Shield Mic)` using native PipeWire (`pw-loopback`) or PulseAudio. Adds desktop launcher and autostart entries.
-* **macOS:** Integrates with CoreAudio and BlackHole virtual audio loopback.
+Both installers launch the **Aethelark MicShield Setup Assistant** GUI with full taskbar integration and custom vector icons.
 
-#### Clean Uninstall (Linux & macOS)
-```bash
-./uninstall.sh
-```
-
-#### Windows
-Run in PowerShell as Administrator:
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force
-.\install.ps1
-```
-* Integrates with VB-CABLE / Virtual Audio Cable and creates a Desktop shortcut.
-
-#### Clean Uninstall (Windows)
-```powershell
-.\uninstall.ps1
-```
 
 ---
 

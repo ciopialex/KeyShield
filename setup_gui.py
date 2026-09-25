@@ -12,6 +12,13 @@ from pathlib import Path
 # Add project root to sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+if sys.platform == "win32":
+    try:
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("aethelark.micshield.setup.1.0")
+    except Exception:
+        pass
+
 from PyQt6.QtWidgets import QApplication
 from keyshield.ui.installer import SetupAssistantWindow
 from keyshield.ui.assets import get_aethelark_icon
@@ -19,12 +26,15 @@ from keyshield.ui.assets import get_aethelark_icon
 
 def main():
     app = QApplication(sys.argv)
-    app.setApplicationName("Aethelark MicShield Setup")
+    app.setApplicationName("aethelark-micshield-setup")
     app.setApplicationDisplayName("Aethelark MicShield Setup")
     app.setDesktopFileName("aethelark-micshield-setup")
-    app.setWindowIcon(get_aethelark_icon())
+
+    icon = get_aethelark_icon()
+    app.setWindowIcon(icon)
 
     window = SetupAssistantWindow()
+    window.setWindowIcon(icon)
     window.show()
 
     sys.exit(app.exec())
