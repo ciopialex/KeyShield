@@ -115,19 +115,43 @@ class SetupAssistantWindow(QMainWindow):
         # Standard window with taskbar presence
         self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setFixedSize(430, 680)
+        self.setFixedSize(430, 725)
 
         self._drag_pos = None
         self.is_installed = self._check_is_installed()
+        self.install_dir = self._get_default_install_dir()
 
         self.log_signal.connect(self._on_progress)
         self.finished_signal.connect(self._on_finished)
 
         self._init_ui()
 
+    def _get_default_install_dir(self) -> Path:
+        """Returns standard platform installation directory."""
+        cfg_file = Path.home() / ".config" / "aethelark-micshield" / "install_dir"
+        if cfg_file.exists():
+            try:
+                saved = cfg_file.read_text().strip()
+                if saved and Path(saved).exists():
+                    return Path(saved)
+            except Exception:
+                pass
+
+        sys_name = platform.system().lower()
+        if sys_name == "windows":
+            appdata = os.environ.get("LOCALAPPDATA")
+            if appdata:
+                return Path(appdata) / "Aethelark" / "MicShield"
+            return Path.home() / "AppData" / "Local" / "Aethelark" / "MicShield"
+        elif sys_name == "darwin":
+            return Path.home() / "Applications" / "Aethelark MicShield"
+        else:
+            return Path.home() / ".local" / "share" / "aethelark-micshield"
+
     def _check_is_installed(self) -> bool:
         launcher = Path.home() / ".local" / "bin" / "keyshield"
         return launcher.exists()
+
 
     def _init_ui(self):
         root = QWidget(self)
@@ -232,9 +256,51 @@ class SetupAssistantWindow(QMainWindow):
 
         layout.addWidget(shell)
 
+        # 5. Dedicated Install Destination Card
+        self.loc_card = QWidget()
+        self.loc_card.setStyleSheet("""
+            background: #101115;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        """)
+        loc_layout = QHBoxLayout(self.loc_card)
+        loc_layout.setContentsMargins(12, 7, 12, 7)
+        loc_layout.setSpacing(10)
 
+        loc_text_col = QVBoxLayout()
+        loc_text_col.setSpacing(2)
+        lbl_loc_title = QLabel("INSTALLATION DIRECTORY")
+        lbl_loc_title.setStyleSheet("color: #636366; font-size: 8px; font-weight: 700; letter-spacing: 1.2px;")
 
-        # 5. Status Chip & Readiness Strip
+        home_str = str(Path.home())
+        disp_path = str(self.install_dir).replace(home_str, "~")
+        self.lbl_loc_path = QLabel(disp_path)
+        self.lbl_loc_path.setStyleSheet("color: #C7C7CC; font-size: 10px; font-family: -apple-system, monospace;")
+        loc_text_col.addWidget(lbl_loc_title)
+        loc_text_col.addWidget(self.lbl_loc_path)
+        loc_layout.addLayout(loc_text_col)
+        loc_layout.addStretch()
+
+        self.btn_change_dir = QPushButton("Change")
+        self.btn_change_dir.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.btn_change_dir.setStyleSheet("""
+            QPushButton {
+                background: #18191E;
+                color: #C7C7CC;
+                font-size: 10.5px;
+                font-weight: 600;
+                border-radius: 7px;
+                padding: 4px 10px;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+            }
+            QPushButton:hover { background: #22242B; color: #FFFFFF; border-color: rgba(255, 255, 255, 0.15); }
+        """)
+        self.btn_change_dir.clicked.connect(self._on_change_dir_clicked)
+        loc_layout.addWidget(self.btn_change_dir)
+
+        layout.addWidget(self.loc_card)
+
+        # 6. Status Chip & Readiness Strip
         self.status_chip = QWidget()
         self.status_chip.setStyleSheet("""
             background: #0E1013;
@@ -248,6 +314,7 @@ class SetupAssistantWindow(QMainWindow):
         self.chip_icon = QLabel()
         self.chip_icon.setPixmap(render_svg_pixmap(SVG_CHECKMARK, 14, 14))
         chip_layout.addWidget(self.chip_icon)
+
 
         self.lbl_chip_text = QLabel("System Ready • PipeWire Virtual Loopback Configured")
         self.lbl_chip_text.setStyleSheet("color: #E5E5EA; font-size: 10px; font-weight: 500;")
@@ -340,6 +407,22 @@ class SetupAssistantWindow(QMainWindow):
 
         layout.addLayout(self.btn_layout)
 
+    def _on_change_dir_clicked(self):
+        from PyQt6.QtWidgets import QFileDialog
+        chosen = QFileDialog.getExistingDirectory(
+            self,
+            "Select Installation Folder",
+            str(self.install_dir.parent),
+            QFileDialog.Option.ShowDirsOnly,
+        )
+        if chosen:
+            chosen_path = Path(chosen)
+            if chosen_path.name not in ("aethelark-micshield", "MicShield"):
+                chosen_path = chosen_path / ("MicShield" if platform.system().lower() == "windows" else "aethelark-micshield")
+            self.install_dir = chosen_path
+            home_str = str(Path.home())
+            self.lbl_loc_path.setText(str(self.install_dir).replace(home_str, "~"))
+
     def _start_install(self):
         self.btn_primary.setEnabled(False)
         self.btn_primary.setText("Installing Apparatus...")
@@ -356,16 +439,17 @@ class SetupAssistantWindow(QMainWindow):
 
             sh_path = PROJECT_ROOT / "install.sh"
             if sh_path.exists():
-                subprocess.run(["bash", str(sh_path)], cwd=str(PROJECT_ROOT), check=True)
+                subprocess.run(["bash", str(sh_path), str(self.install_dir)], cwd=str(PROJECT_ROOT), check=True)
 
             self.log_signal.emit("Mounting PipeWire virtual acoustic device...", 75)
             time.sleep(0.4)
 
             self.log_signal.emit("Integration complete.", 100)
             time.sleep(0.3)
-            self.finished_signal.emit(True, "Aethelark MicShield is active and protected.")
+            self.finished_signal.emit(True, f"Aethelark MicShield installed to {self.install_dir.name}.")
         except Exception as e:
             self.finished_signal.emit(False, f"Installation failed: {e}")
+
 
     def _start_uninstall(self):
         self.btn_uninstall.setEnabled(False)

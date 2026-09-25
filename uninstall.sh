@@ -1,29 +1,48 @@
 #!/usr/bin/env bash
 # ==============================================================================
-#  KeyShield - Automated Uninstaller (Linux & macOS)
-#  Intellectual Property (c) 2026 Cioponea Alexandru (Shenny). All Rights Reserved.
+#  Aethelark MicShield - Automated Uninstaller (Linux & macOS)
+#  Copyright (c) 2026 Cioponea Alexandru (Shenny). All Rights Reserved.
 # ==============================================================================
 set -e
 
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 echo "======================================================================"
-echo "  KEYSHIELD // UNINSTALLER"
+echo "  AETHELARK MICSHIELD // UNINSTALLER"
 echo "======================================================================"
 
 # 1. Stop any running instances
 echo "[+] Stopping any running KeyShield processes..."
-pkill -f "keyshield.main" 2>/dev/null || true
-pkill -f "pw-loopback.*KeyShield" 2>/dev/null || true
+pkill -9 -f "keyshield.main" 2>/dev/null || true
+pkill -9 -f "pw-loopback.*KeyShield" 2>/dev/null || true
 
-# 2. Remove binary launcher
+# 2. Check and delete the installed program directory
+CONFIG_DIR="$HOME/.config/aethelark-micshield"
+if [ -f "$CONFIG_DIR/install_dir" ]; then
+    INSTALLED_TARGET="$(cat "$CONFIG_DIR/install_dir")"
+    if [ -n "$INSTALLED_TARGET" ] && [ -d "$INSTALLED_TARGET" ]; then
+        echo "[+] Removing installed program folder: $INSTALLED_TARGET"
+        rm -rf "$INSTALLED_TARGET"
+    fi
+    rm -rf "$CONFIG_DIR"
+fi
+
+# Fallback default locations if config wasn't saved
+if [ -d "$HOME/.local/share/aethelark-micshield" ]; then
+    echo "[+] Removing default directory: $HOME/.local/share/aethelark-micshield"
+    rm -rf "$HOME/.local/share/aethelark-micshield"
+fi
+if [ -d "$HOME/Applications/Aethelark MicShield" ]; then
+    echo "[+] Removing macOS directory: $HOME/Applications/Aethelark MicShield"
+    rm -rf "$HOME/Applications/Aethelark MicShield"
+fi
+
+# 3. Remove binary launcher
 LAUNCHER="$HOME/.local/bin/keyshield"
 if [ -f "$LAUNCHER" ]; then
     echo "[+] Removing launcher: $LAUNCHER"
     rm -f "$LAUNCHER"
 fi
 
-# 3. Remove Desktop & Autostart entries
+# 4. Remove Desktop & Autostart entries
 DESKTOP_ENTRY="$HOME/.local/share/applications/keyshield.desktop"
 AUTOSTART_ENTRY="$HOME/.config/autostart/keyshield.desktop"
 
@@ -37,11 +56,7 @@ if [ -f "$AUTOSTART_ENTRY" ]; then
     rm -f "$AUTOSTART_ENTRY"
 fi
 
-# 4. Clean system caches / build artifacts
-rm -rf "$DIR/build" "$DIR/dist" "$DIR/*.egg-info" "$DIR/keyshield.egg-info" 2>/dev/null || true
-
-
 echo ""
 echo "======================================================================"
-echo "  [✓] KeyShield has been completely uninstalled from your system."
+echo "  [✓] Aethelark MicShield has been completely uninstalled from your system."
 echo "======================================================================"

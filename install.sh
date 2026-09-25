@@ -1,17 +1,26 @@
 #!/usr/bin/env bash
 # ==============================================================================
-#  KeyShield - Automated Installer (Linux & macOS)
-#  Intellectual Property (c) 2026 Cioponea Alexandru (Shenny). All Rights Reserved.
+#  Aethelark MicShield - Automated Installer (Linux & macOS)
+#  Copyright (c) 2026 Cioponea Alexandru (Shenny). All Rights Reserved.
 # ==============================================================================
 set -e
 
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$DIR"
+SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Target installation directory (default or user-specified)
+if [ "$(uname -s)" = "Darwin" ]; then
+    DEFAULT_INSTALL="$HOME/Applications/Aethelark MicShield"
+else
+    DEFAULT_INSTALL="$HOME/.local/share/aethelark-micshield"
+fi
+INSTALL_TARGET="${1:-$DEFAULT_INSTALL}"
 
 echo "======================================================================"
-echo "  KEYSHIELD // ACOUSTIC KEYSTROKE DEFENSE"
+echo "  AETHELARK MICSHIELD // INSTALLER"
 echo "  Designed & Engineered by Cioponea Alexandru (Shenny)"
 echo "======================================================================"
+echo "[+] Source folder: $SOURCE_DIR"
+echo "[+] Install destination: $INSTALL_TARGET"
 
 OS="$(uname -s)"
 echo "[+] Detected Operating System: $OS"
@@ -32,52 +41,72 @@ if [ "$OS" = "Linux" ]; then
     elif command -v pactl &>/dev/null; then
         echo "[+] PulseAudio subsystem detected (pactl ready)."
     else
-        echo "[!] Note: Neither pw-loopback nor pactl was found."
-        echo "    KeyShield will run in direct monitor mode."
+        echo "[!] Note: pw-loopback or pactl recommended for virtual microphone."
     fi
 elif [ "$OS" = "Darwin" ]; then
     if system_profiler SPAudioDataType 2>/dev/null | grep -i "BlackHole" &>/dev/null; then
         echo "[+] macOS BlackHole virtual audio driver detected."
     else
-        echo "[!] Recommended: Install BlackHole 2ch for seamless virtual microphone routing:"
-        echo "    brew install blackhole-2ch"
+        echo "[!] Recommended for macOS: brew install blackhole-2ch"
     fi
 fi
 
-# 3. Create isolated virtual environment
-if [ ! -d ".venv" ]; then
-    echo "[+] Creating virtual environment in .venv..."
-    python3 -m venv .venv
+# 3. Create isolated installation directory & copy files
+echo "[+] Installing payload into $INSTALL_TARGET..."
+mkdir -p "$INSTALL_TARGET"
+cp -r "$SOURCE_DIR/keyshield" "$INSTALL_TARGET/"
+cp "$SOURCE_DIR/setup.py" "$INSTALL_TARGET/" 2>/dev/null || true
+cp "$SOURCE_DIR/requirements.txt" "$INSTALL_TARGET/"
+cp "$SOURCE_DIR/LICENSE.md" "$INSTALL_TARGET/" 2>/dev/null || true
+cp "$SOURCE_DIR/README.md" "$INSTALL_TARGET/" 2>/dev/null || true
+
+# 4. Create virtual environment inside the destination directory
+if [ ! -d "$INSTALL_TARGET/.venv" ]; then
+    echo "[+] Creating dedicated virtual environment in $INSTALL_TARGET/.venv..."
+    python3 -m venv "$INSTALL_TARGET/.venv"
 fi
 
-echo "[+] Installing KeyShield dependencies..."
-.venv/bin/pip install --quiet --upgrade pip
-.venv/bin/pip install --quiet -r requirements.txt
-.venv/bin/pip install --quiet -e .
+echo "[+] Installing neural dependencies..."
+"$INSTALL_TARGET/.venv/bin/pip" install --quiet --upgrade pip
+"$INSTALL_TARGET/.venv/bin/pip" install --quiet -r "$INSTALL_TARGET/requirements.txt"
+"$INSTALL_TARGET/.venv/bin/pip" install --quiet -e "$INSTALL_TARGET"
 
-# 4. Create local user launcher script
+# 5. Record installation directory for clean uninstaller
+CONFIG_DIR="$HOME/.config/aethelark-micshield"
+mkdir -p "$CONFIG_DIR"
+echo "$INSTALL_TARGET" > "$CONFIG_DIR/install_dir"
+
+# 6. Create local user launcher script
 LAUNCHER_DIR="$HOME/.local/bin"
 mkdir -p "$LAUNCHER_DIR"
 
 cat << EOF > "$LAUNCHER_DIR/keyshield"
 #!/usr/bin/env bash
-cd "$DIR"
-exec "$DIR/.venv/bin/python" -m keyshield.main "\$@"
+cd "$INSTALL_TARGET"
+exec "$INSTALL_TARGET/.venv/bin/python" -m keyshield.main "\$@"
 EOF
 chmod +x "$LAUNCHER_DIR/keyshield"
 echo "[+] Created executable command: $LAUNCHER_DIR/keyshield"
 
-# 5. Linux Desktop Integration (.desktop file)
+# 7. Desktop & Icon Integration
 if [ "$OS" = "Linux" ]; then
+    ICON_DIR="$HOME/.local/share/icons/hicolor/scalable/apps"
     APP_DIR="$HOME/.local/share/applications"
     AUTOSTART_DIR="$HOME/.config/autostart"
-    mkdir -p "$APP_DIR" "$AUTOSTART_DIR"
+    mkdir -p "$ICON_DIR" "$APP_DIR" "$AUTOSTART_DIR"
+
+    if [ -f "$INSTALL_TARGET/keyshield/assets/aethelark-micshield.svg" ]; then
+        cp "$INSTALL_TARGET/keyshield/assets/aethelark-micshield.svg" "$ICON_DIR/aethelark-micshield.svg"
+        command -v gtk-update-icon-cache &>/dev/null && gtk-update-icon-cache -f -t "$HOME/.local/share/icons/hicolor" 2>/dev/null || true
+    fi
 
     DESKTOP_ENTRY="[Desktop Entry]
-Name=KeyShield
+Name=Aethelark MicShield
 GenericName=Acoustic Keystroke Defense
 Comment=Blocks acoustic keyboard eavesdropping while preserving human speech
 Exec=$LAUNCHER_DIR/keyshield
+Icon=aethelark-micshield
+StartupWMClass=aethelark-micshield
 Terminal=false
 Type=Application
 Categories=Utility;Security;Audio;
@@ -91,11 +120,7 @@ fi
 
 echo ""
 echo "======================================================================"
-echo "  [✓] KeyShield successfully installed!"
-echo "  "
-echo "  To launch KeyShield:"
-echo "    $LAUNCHER_DIR/keyshield"
-echo "  "
-echo "  Or start in background tray:"
-echo "    $LAUNCHER_DIR/keyshield --minimized"
+echo "  [✓] Aethelark MicShield successfully installed!"
+echo "  Installed at: $INSTALL_TARGET"
+echo "  Launcher: $LAUNCHER_DIR/keyshield"
 echo "======================================================================"
