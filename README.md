@@ -59,8 +59,8 @@ Whether from background apps, browser tabs running malicious WebRTC scripts, com
 ### Linux & macOS
 Run the automated installer:
 ```bash
-git clone https://github.com/your-username/keyshield.git
-cd keyshield
+git clone https://github.com/ciopialex/KeyShield.git
+cd KeyShield
 chmod +x install.sh
 ./install.sh
 ```
