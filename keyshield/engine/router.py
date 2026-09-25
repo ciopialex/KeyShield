@@ -50,8 +50,8 @@ class AudioRouter:
                 cmd = [
                     "pw-loopback",
                     "--name=KeyShield_Daemon",
-                    "--capture-props=media.class=Audio/Sink node.name=KeyShield_Sink node.description=\"KeyShield Virtual Sink\"",
-                    "--playback-props=media.class=Audio/Source node.name=KeyShield_Mic node.description=\"KeyShield (Acoustic Shield Mic)\""
+                    "--capture-props=media.class=Audio/Sink node.name=KeyShield_Sink node.description=KeyShield_Virtual_Sink",
+                    "--playback-props=media.class=Audio/Source node.name=KeyShield_Mic node.description=KeyShield_Acoustic_Shield_Mic"
                 ]
                 self._loopback_process = subprocess.Popen(
                     cmd,
@@ -120,7 +120,7 @@ class AudioRouter:
         # 1. Locate physical input microphone
         # Avoid our own virtual sinks as inputs
         default_in = sd.default.device[0]
-        if default_in is not None and default_in >= 0:
+        if default_in is not None and 0 <= default_in < len(devices):
             dev_name = devices[default_in]["name"].lower()
             if "keyshield" not in dev_name and "null" not in dev_name:
                 input_idx = default_in
@@ -129,7 +129,7 @@ class AudioRouter:
             for idx, dev in enumerate(devices):
                 if dev["max_input_channels"] > 0:
                     name = dev["name"].lower()
-                    if "keyshield" not in name and "blackhole" not in name and "cable" not in name:
+                    if "keyshield" not in name and "blackhole" not in name and "cable" not in name and "null" not in name:
                         input_idx = idx
                         break
 
@@ -153,11 +153,25 @@ class AudioRouter:
         """Cleanly terminates virtual audio loopbacks and unmounts modules."""
         if self._loopback_process:
             try:
-                self._loopback_process.terminate()
+                import signal
+                if hasattr(os, "killpg") and hasattr(os, "getpgid"):
+                    try:
+                        os.killpg(os.getpgid(self._loopback_process.pid), signal.SIGTERM)
+                    except Exception:
+                        self._loopback_process.terminate()
+                else:
+                    self._loopback_process.terminate()
                 self._loopback_process.wait(timeout=1.0)
             except Exception:
                 try:
-                    self._loopback_process.kill()
+                    import signal
+                    if hasattr(os, "killpg") and hasattr(os, "getpgid"):
+                        try:
+                            os.killpg(os.getpgid(self._loopback_process.pid), signal.SIGKILL)
+                        except Exception:
+                            self._loopback_process.kill()
+                    else:
+                        self._loopback_process.kill()
                 except Exception:
                     pass
             self._loopback_process = None

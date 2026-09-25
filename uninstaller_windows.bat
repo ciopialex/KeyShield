@@ -12,13 +12,24 @@ echo ======================================================================
 
 cd /d "%~dp0"
 
-REM 1. Terminate running background instances
-taskkill /F /IM pythonw.exe /FI "WINDOWTITLE eq Aethelark*" >nul 2>&1
+REM Run PowerShell uninstaller if available
+where powershell >nul 2>&1
+if %errorlevel% equ 0 (
+    powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0uninstall.ps1"
+    pause
+    exit /b 0
+)
 
-REM 2. Remove Desktop shortcut
+REM Fallback batch cleanup if powershell is absent
+taskkill /F /IM pythonw.exe /FI "WINDOWTITLE eq Aethelark*" >nul 2>&1
+taskkill /F /IM pythonw.exe /FI "WINDOWTITLE eq KeyShield*" >nul 2>&1
+
 set DESKTOP_DIR=%USERPROFILE%\Desktop
 if exist "%DESKTOP_DIR%\KeyShield.lnk" del /F /Q "%DESKTOP_DIR%\KeyShield.lnk"
 if exist "%DESKTOP_DIR%\Aethelark-MicShield.lnk" del /F /Q "%DESKTOP_DIR%\Aethelark-MicShield.lnk"
+
+set TARGET_DIR=%LOCALAPPDATA%\Aethelark\MicShield
+if exist "%TARGET_DIR%" rmdir /S /Q "%TARGET_DIR%"
 
 echo.
 echo ======================================================================

@@ -14,6 +14,7 @@ else
     DEFAULT_INSTALL="$HOME/.local/share/aethelark-micshield"
 fi
 INSTALL_TARGET="${1:-$DEFAULT_INSTALL}"
+AUTOSTART_FLAG="${2:-autostart}"
 
 echo "======================================================================"
 echo "  AETHELARK MICSHIELD // INSTALLER"
@@ -113,9 +114,13 @@ Categories=Utility;Security;Audio;
 StartupNotify=true
 "
     echo "$DESKTOP_ENTRY" > "$APP_DIR/keyshield.desktop"
-    echo "$DESKTOP_ENTRY" > "$AUTOSTART_DIR/keyshield.desktop"
     chmod +x "$APP_DIR/keyshield.desktop"
-    echo "[+] Created Desktop Application & Autostart entries."
+    if [ "$AUTOSTART_FLAG" != "no-autostart" ]; then
+        echo "$DESKTOP_ENTRY" > "$AUTOSTART_DIR/keyshield.desktop"
+        echo "[+] Created Desktop Application & Autostart entries."
+    else
+        echo "[+] Created Desktop Application entry (Autostart disabled)."
+    fi
 fi
 
 echo ""

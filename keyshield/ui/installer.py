@@ -435,21 +435,36 @@ class SetupAssistantWindow(QMainWindow):
     def _run_install_worker(self):
         try:
             self.log_signal.emit("Configuring ONNX neural engine...", 35)
-            time.sleep(0.4)
+            time.sleep(0.3)
 
-            sh_path = PROJECT_ROOT / "install.sh"
-            if sh_path.exists():
-                subprocess.run(["bash", str(sh_path), str(self.install_dir)], cwd=str(PROJECT_ROOT), check=True)
+            is_windows = platform.system().lower() == "windows"
+            autostart_arg = "autostart" if self.chk_autostart.isChecked() else "no-autostart"
 
-            self.log_signal.emit("Mounting PipeWire virtual acoustic device...", 75)
-            time.sleep(0.4)
+            if is_windows:
+                ps1_path = PROJECT_ROOT / "install.ps1"
+                if ps1_path.exists():
+                    subprocess.run(
+                        ["powershell", "-ExecutionPolicy", "Bypass", "-File", str(ps1_path)],
+                        cwd=str(PROJECT_ROOT),
+                        check=True,
+                    )
+            else:
+                sh_path = PROJECT_ROOT / "install.sh"
+                if sh_path.exists():
+                    subprocess.run(
+                        ["bash", str(sh_path), str(self.install_dir), autostart_arg],
+                        cwd=str(PROJECT_ROOT),
+                        check=True,
+                    )
+
+            self.log_signal.emit("Mounting virtual acoustic device...", 75)
+            time.sleep(0.3)
 
             self.log_signal.emit("Integration complete.", 100)
-            time.sleep(0.3)
+            time.sleep(0.2)
             self.finished_signal.emit(True, f"Aethelark MicShield installed to {self.install_dir.name}.")
         except Exception as e:
             self.finished_signal.emit(False, f"Installation failed: {e}")
-
 
     def _start_uninstall(self):
         self.btn_uninstall.setEnabled(False)
@@ -463,11 +478,22 @@ class SetupAssistantWindow(QMainWindow):
 
     def _run_uninstall_worker(self):
         try:
-            sh_path = PROJECT_ROOT / "uninstall.sh"
-            if sh_path.exists():
-                subprocess.run(["bash", str(sh_path)], cwd=str(PROJECT_ROOT), check=True)
+            is_windows = platform.system().lower() == "windows"
+            if is_windows:
+                ps1_path = PROJECT_ROOT / "uninstall.ps1"
+                if ps1_path.exists():
+                    subprocess.run(
+                        ["powershell", "-ExecutionPolicy", "Bypass", "-File", str(ps1_path)],
+                        cwd=str(PROJECT_ROOT),
+                        check=True,
+                    )
+            else:
+                sh_path = PROJECT_ROOT / "uninstall.sh"
+                if sh_path.exists():
+                    subprocess.run(["bash", str(sh_path)], cwd=str(PROJECT_ROOT), check=True)
+
             self.log_signal.emit("All virtual devices, shortcuts & configs removed.", 100)
-            time.sleep(0.4)
+            time.sleep(0.3)
             self.finished_signal.emit(True, "Uninstalled cleanly from system.")
         except Exception as e:
             self.finished_signal.emit(False, f"Uninstall failed: {e}")

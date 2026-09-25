@@ -387,7 +387,7 @@ class KeyShieldWindow(QMainWindow):
         c2_layout.setSpacing(2)
         lbl_c2_t = QLabel("LATENCY")
         lbl_c2_t.setStyleSheet("color: #636366; font-size: 8px; font-weight: 700; letter-spacing: 1px;")
-        lbl_c2_val = QLabel("0.25 ms")
+        lbl_c2_val = QLabel("0.11 ms")
         lbl_c2_val.setStyleSheet("color: #389E62; font-size: 18px; font-weight: 700; font-family: -apple-system, monospace;")
         c2_layout.addWidget(lbl_c2_t)
         c2_layout.addWidget(lbl_c2_val)
@@ -442,6 +442,11 @@ class KeyShieldWindow(QMainWindow):
         if event.buttons() == Qt.MouseButton.LeftButton:
             self.move(event.globalPosition().toPoint() - self._drag_pos)
             event.accept()
+
+    def closeEvent(self, event):
+        """Hides window to system tray on window manager close or Alt+F4."""
+        self.hide()
+        event.ignore()
 
     def paintEvent(self, event):
         """Draws the dark obsidian glass card background."""

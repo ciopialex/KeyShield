@@ -32,7 +32,9 @@ def build():
 
     os_name = platform.system().lower()
     sep = ";" if os_name == "windows" else ":"
-    data_arg = f"{MODEL_PATH}{sep}keyshield/models"
+    model_data = f"{MODEL_PATH}{sep}keyshield/models"
+    assets_path = PROJECT_ROOT / "keyshield" / "assets"
+    assets_data = f"{assets_path}{sep}keyshield/assets"
 
     cmd = [
         sys.executable,
@@ -41,7 +43,8 @@ def build():
         "--name=KeyShield",
         "--onefile",
         "--noconsole",
-        f"--add-data={data_arg}",
+        f"--add-data={model_data}",
+        f"--add-data={assets_data}",
         "--clean",
         str(MAIN_PATH),
     ]

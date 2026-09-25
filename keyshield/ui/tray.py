@@ -43,7 +43,7 @@ class KeyShieldTray(QSystemTrayIcon):
         self.main_window = main_window
         self.shield_engine = shield_engine
 
-        self.setToolTip("KeyShield — Acoustic Keystroke Defense Active")
+        self.setToolTip("Aethelark MicShield — Acoustic Keystroke Defense Active")
 
         menu = QMenu()
         menu.setStyleSheet("""
@@ -66,7 +66,7 @@ class KeyShieldTray(QSystemTrayIcon):
             }
         """)
 
-        self.act_show = QAction("Open KeyShield", self)
+        self.act_show = QAction("Open Aethelark MicShield", self)
         self.act_show.triggered.connect(self._toggle_window)
         menu.addAction(self.act_show)
 
@@ -76,7 +76,7 @@ class KeyShieldTray(QSystemTrayIcon):
 
         menu.addSeparator()
 
-        act_quit = QAction("Quit KeyShield", self)
+        act_quit = QAction("Quit Aethelark MicShield", self)
         act_quit.triggered.connect(self._quit)
         menu.addAction(act_quit)
 
@@ -101,10 +101,10 @@ class KeyShieldTray(QSystemTrayIcon):
         self.setIcon(create_shield_icon(is_armed))
         if is_armed:
             self.act_toggle_shield.setText("Disable Defense")
-            self.setToolTip("KeyShield — Acoustic Keystroke Defense Active")
+            self.setToolTip("Aethelark MicShield — Acoustic Keystroke Defense Active")
         else:
             self.act_toggle_shield.setText("Enable Defense")
-            self.setToolTip("KeyShield — Defense Paused")
+            self.setToolTip("Aethelark MicShield — Defense Paused")
 
     def _quit(self):
         self.shield_engine.stop()

@@ -120,6 +120,12 @@ class SileroNeuralGate:
             sys_state: str         (IDLE | VOICE | HANGOVER)
             keystroke_blocked: bool (True if a non-speech impulse was intercepted)
         """
+        if len(samples) != self.frame_samples:
+            if len(samples) < self.frame_samples:
+                samples = np.pad(samples, (0, self.frame_samples - len(samples)))
+            else:
+                samples = samples[:self.frame_samples]
+
         self.push_ring(samples)
 
         raw_x = samples.astype(np.float32)

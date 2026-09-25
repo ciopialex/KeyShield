@@ -56,6 +56,18 @@ if [ -f "$AUTOSTART_ENTRY" ]; then
     rm -f "$AUTOSTART_ENTRY"
 fi
 
+# 5. Remove setup entry and icons
+SETUP_DESKTOP="$HOME/.local/share/applications/aethelark-micshield-setup.desktop"
+if [ -f "$SETUP_DESKTOP" ]; then
+    echo "[+] Removing setup assistant launcher: $SETUP_DESKTOP"
+    rm -f "$SETUP_DESKTOP"
+fi
+
+ICON_DIR="$HOME/.local/share/icons/hicolor/scalable/apps"
+rm -f "$ICON_DIR/aethelark-micshield.svg" 2>/dev/null || true
+rm -f "$ICON_DIR/aethelark-micshield-setup.svg" 2>/dev/null || true
+command -v gtk-update-icon-cache &>/dev/null && gtk-update-icon-cache -f -t "$HOME/.local/share/icons/hicolor" 2>/dev/null || true
+
 echo ""
 echo "======================================================================"
 echo "  [✓] Aethelark MicShield has been completely uninstalled from your system."
