@@ -37,14 +37,9 @@ if [ -f "$AUTOSTART_ENTRY" ]; then
     rm -f "$AUTOSTART_ENTRY"
 fi
 
-# 4. Remove virtual environment
-if [ -d "$DIR/.venv" ]; then
-    echo "[+] Removing virtual environment in $DIR/.venv..."
-    rm -rf "$DIR/.venv"
-fi
-
-# 5. Remove build/egg artifacts
+# 4. Clean system caches / build artifacts
 rm -rf "$DIR/build" "$DIR/dist" "$DIR/*.egg-info" "$DIR/keyshield.egg-info" 2>/dev/null || true
+
 
 echo ""
 echo "======================================================================"
