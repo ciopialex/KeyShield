@@ -444,7 +444,17 @@ class SetupAssistantWindow(QMainWindow):
                 ps1_path = PROJECT_ROOT / "install.ps1"
                 if ps1_path.exists():
                     subprocess.run(
-                        ["powershell", "-ExecutionPolicy", "Bypass", "-File", str(ps1_path)],
+                        [
+                            "powershell",
+                            "-ExecutionPolicy",
+                            "Bypass",
+                            "-File",
+                            str(ps1_path),
+                            "-InstallTarget",
+                            str(self.install_dir),
+                            "-Autostart",
+                            autostart_arg,
+                        ],
                         cwd=str(PROJECT_ROOT),
                         check=True,
                     )

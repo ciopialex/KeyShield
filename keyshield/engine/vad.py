@@ -84,6 +84,8 @@ class SileroNeuralGate:
         self._sr = np.array(self.sample_rate, dtype=np.int64)
         self.sys_state = self.STATE_IDLE
         self.hangover_timer = 0
+        self.blocked_keystroke_count = 0
+        self._consecutive_transients = 0
         self._ring_buffer.fill(0)
         self._ring_idx = 0
 
@@ -130,6 +132,8 @@ class SileroNeuralGate:
 
         raw_x = samples.astype(np.float32)
         raw_rms = float(np.sqrt(np.mean(raw_x ** 2)))
+        peak_amp = float(np.max(np.abs(raw_x)))
+        crest_factor = peak_amp / (raw_rms + 1e-6)
 
         # Normalize 16-bit PCM to float32 [-1.0, 1.0]
         chunk = raw_x.reshape(1, -1) / 32768.0
@@ -152,9 +156,10 @@ class SileroNeuralGate:
                 self.sys_state = self.STATE_VOICE
                 self._consecutive_transients = 0
             else:
-                # Impulse detection: RMS high, but speech probability very low (< 0.15)
-                # This is characteristic of mechanical switches, keyboard strokes, or clicks.
-                if raw_rms > 180.0 and speech_prob < self.threshold:
+                # Impulse detection: High RMS and high crest factor (sharp mechanical shock > 3.2),
+                # with low neural speech probability.
+                # Mechanical switches, typing clicks, and keyboard strokes have crest factors > 5.0.
+                if raw_rms > 180.0 and crest_factor > 3.2 and speech_prob < self.threshold:
                     self._consecutive_transients += 1
                     # Register blocked keystroke
                     if self._consecutive_transients % 2 == 1:
