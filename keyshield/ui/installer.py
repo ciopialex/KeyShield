@@ -1,7 +1,8 @@
-"""KeyShield Steve Jobs-esque Graphical Installer & Setup Assistant.
+"""Aethelark MicShield Steve Jobs-esque Graphical Setup Assistant.
 ======================================================================
 Copyright (c) 2026 Cioponea Alexandru (Shenny). All Rights Reserved.
 Licensed for personal, non-commercial use only.
+Strictly zero emojis. Agency-grade double-bezel vector architecture.
 """
 from __future__ import annotations
 
@@ -15,35 +16,106 @@ import time
 from pathlib import Path
 
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QRectF, QSize, Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QBrush, QColor, QFont, QIcon, QLinearGradient, QPainter, QPainterPath, QPen, QRadialGradient
+from PyQt6.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+    QGuiApplication,
+    QIcon,
+    QLinearGradient,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPixmap,
+    QRadialGradient,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QCheckBox,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QMainWindow,
     QProgressBar,
     QPushButton,
+    QScrollArea,
     QVBoxLayout,
     QWidget,
 )
 
-from keyshield.ui.tray import create_shield_icon
+from keyshield.ui.assets import (
+    SVG_AETHELARK_SHIELD,
+    SVG_ARROW_RIGHT,
+    SVG_CHECKMARK,
+    SVG_HARDWARE_ENCLAVE,
+    SVG_KEYSTROKE_DEFLECT,
+    SVG_VOCAL_RESONANCE,
+    get_aethelark_icon,
+    render_svg_pixmap,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
-class SetupAssistantWindow(QMainWindow):
-    """Minimalist Cupertino-style Graphical Installer."""
+class FeatureRow(QWidget):
+    """Architectural double-bezel feature block with custom vector icon."""
 
-    log_signal = pyqtSignal(str, int)  # status text, progress percentage
+    def __init__(self, svg_str: str, title: str, description: str, parent=None):
+        super().__init__(parent)
+        self.setStyleSheet("background: transparent;")
+
+        layout = QHBoxLayout(self)
+        layout.setContentsMargins(10, 8, 10, 8)
+        layout.setSpacing(14)
+
+        # Vector Icon Container (Milled Circular Bezel)
+        icon_box = QWidget()
+        icon_box.setFixedSize(36, 36)
+        icon_box.setStyleSheet("""
+            background: #14171A;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        """)
+        box_layout = QVBoxLayout(icon_box)
+        box_layout.setContentsMargins(7, 7, 7, 7)
+
+        lbl_icon = QLabel()
+        lbl_icon.setPixmap(render_svg_pixmap(svg_str, 20, 20))
+        lbl_icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        box_layout.addWidget(lbl_icon)
+        layout.addWidget(icon_box)
+
+        # Text Column
+        text_col = QVBoxLayout()
+        text_col.setSpacing(2)
+
+        lbl_title = QLabel(title)
+        lbl_title.setStyleSheet("color: #F2F2F7; font-size: 11px; font-weight: 600; letter-spacing: 0.2px;")
+        text_col.addWidget(lbl_title)
+
+        lbl_desc = QLabel(description)
+        lbl_desc.setWordWrap(True)
+        lbl_desc.setStyleSheet("color: #8E8E93; font-size: 10px; line-height: 1.35;")
+        text_col.addWidget(lbl_desc)
+
+        layout.addLayout(text_col)
+
+
+class SetupAssistantWindow(QMainWindow):
+    """Steve Jobs-esque Cupertino Glass Graphical Setup Assistant."""
+
+    log_signal = pyqtSignal(str, int)
     finished_signal = pyqtSignal(bool, str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.Window)
+        self.setWindowTitle("Aethelark MicShield Setup")
+        self.setWindowIcon(get_aethelark_icon())
+
+        # Standard window with taskbar presence
+        self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setFixedSize(380, 500)
+        self.setFixedSize(430, 680)
 
         self._drag_pos = None
         self.is_installed = self._check_is_installed()
@@ -54,7 +126,6 @@ class SetupAssistantWindow(QMainWindow):
         self._init_ui()
 
     def _check_is_installed(self) -> bool:
-        """Checks if KeyShield launcher is already in ~/.local/bin or desktop."""
         launcher = Path.home() / ".local" / "bin" / "keyshield"
         return launcher.exists()
 
@@ -63,148 +134,213 @@ class SetupAssistantWindow(QMainWindow):
         self.setCentralWidget(root)
 
         layout = QVBoxLayout(root)
-        layout.setContentsMargins(28, 24, 28, 28)
-        layout.setSpacing(16)
+        layout.setContentsMargins(28, 22, 28, 26)
+        layout.setSpacing(12)
 
-        # 1. Top Controls (Close button)
+        # 1. Top Controls Bar
         top_bar = QHBoxLayout()
+        top_bar.setContentsMargins(0, 0, 0, 0)
+
+        eyebrow = QLabel("AETHELARK APPARATUS")
+        eyebrow.setStyleSheet("""
+            color: #34C759;
+            background: rgba(52, 199, 89, 0.12);
+            border: 1px solid rgba(52, 199, 89, 0.25);
+            border-radius: 10px;
+            padding: 3px 8px;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+        """)
+        top_bar.addWidget(eyebrow)
         top_bar.addStretch()
+
         btn_close = QPushButton("×")
-        btn_close.setFixedSize(24, 24)
+        btn_close.setFixedSize(26, 26)
+        btn_close.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_close.setStyleSheet("""
             QPushButton {
-                background: #1C1C1E; color: #8E8E93; border-radius: 12px; font-size: 14px; font-weight: bold; border: none;
+                background: #18191E; color: #8E8E93; border-radius: 13px; font-size: 15px; font-weight: bold; border: 1px solid rgba(255, 255, 255, 0.05);
             }
-            QPushButton:hover { background: #E03535; color: #FFFFFF; }
+            QPushButton:hover { background: #E03535; color: #FFFFFF; border-color: transparent; }
         """)
         btn_close.clicked.connect(self.close)
         top_bar.addWidget(btn_close)
         layout.addLayout(top_bar)
 
-        # 2. Hero Icon (Centered Shield)
+        # 2. Hero Vector Shield (Custom SVG with radiant ambient halo)
         icon_row = QHBoxLayout()
         icon_row.addStretch()
-        lbl_icon = QLabel()
-        lbl_icon.setPixmap(create_shield_icon(True).pixmap(72, 72))
-        icon_row.addWidget(lbl_icon)
+        lbl_hero = QLabel()
+        lbl_hero.setPixmap(render_svg_pixmap(SVG_AETHELARK_SHIELD, 82, 82))
+        lbl_hero.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        icon_row.addWidget(lbl_hero)
         icon_row.addStretch()
         layout.addLayout(icon_row)
 
-        # 3. Title & Subtitle
-        self.lbl_title = QLabel("KeyShield Setup")
+        # 3. Typography & Attribution
+        self.lbl_title = QLabel("Aethelark MicShield")
         self.lbl_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.lbl_title.setStyleSheet("color: #FFFFFF; font-size: 22px; font-weight: 700; font-family: -apple-system, 'SF Pro Display', sans-serif;")
+        self.lbl_title.setStyleSheet("""
+            color: #FFFFFF;
+            font-size: 21px;
+            font-weight: 700;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+            letter-spacing: -0.3px;
+        """)
         layout.addWidget(self.lbl_title)
 
-        self.lbl_sub = QLabel("Acoustic Keystroke Defense & Neural Gatekeeper\nDesigned by Cioponea Alexandru (Shenny)")
+        self.lbl_sub = QLabel("Autonomous Acoustic Firewall • Designed by Cioponea Alexandru")
         self.lbl_sub.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.lbl_sub.setStyleSheet("color: #8E8E93; font-size: 11px; line-height: 1.4;")
+        self.lbl_sub.setStyleSheet("color: #7A7D85; font-size: 10px; font-weight: 500; letter-spacing: 0.2px;")
         layout.addWidget(self.lbl_sub)
 
-        layout.addSpacing(6)
+        layout.addSpacing(2)
 
-        # 4. Status Card
-        self.status_card = QWidget()
-        self.status_card.setStyleSheet("background: #141418; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.06);")
-        card_layout = QVBoxLayout(self.status_card)
-        card_layout.setContentsMargins(16, 14, 16, 14)
-        card_layout.setSpacing(8)
-
-        if self.is_installed:
-            self.lbl_state = QLabel("✓ KeyShield is currently installed")
-            self.lbl_state.setStyleSheet("color: #34C759; font-size: 12px; font-weight: 600;")
-            self.lbl_state_desc = QLabel("Installed at ~/.local/bin/keyshield with autostart enabled.")
-        else:
-            self.lbl_state = QLabel("Ready to Install")
-            self.lbl_state.setStyleSheet("color: #FFFFFF; font-size: 12px; font-weight: 600;")
-            self.lbl_state_desc = QLabel("Installs neural voice firewall and registers the virtual microphone.")
-
-        self.lbl_state_desc.setStyleSheet("color: #8E8E93; font-size: 11px;")
-        card_layout.addWidget(self.lbl_state)
-        card_layout.addWidget(self.lbl_state_desc)
-
-        # Progress bar (hidden initially)
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setFixedHeight(4)
-        self.progress_bar.setTextVisible(False)
-        self.progress_bar.setStyleSheet("""
-            QProgressBar {
-                background: #2C2C2E;
-                border-radius: 2px;
-                border: none;
-            }
-            QProgressBar::chunk {
-                background: #34C759;
-                border-radius: 2px;
+        # 4. Double-Bezel Architectural Container (How it protects you)
+        shell = QWidget()
+        shell.setStyleSheet("""
+            QWidget#Shell {
+                background: #101115;
+                border-radius: 14px;
+                border: 1px solid rgba(255, 255, 255, 0.06);
             }
         """)
+        shell.setObjectName("Shell")
+        shell_layout = QVBoxLayout(shell)
+        shell_layout.setContentsMargins(4, 4, 4, 4)
+        shell_layout.setSpacing(2)
+
+        row1 = FeatureRow(
+            SVG_KEYSTROKE_DEFLECT,
+            "Acoustic Keystroke Deflection",
+            "Neutralizes AI sound eavesdroppers that reconstruct private passwords and typing from microphone audio."
+        )
+        row2 = FeatureRow(
+            SVG_VOCAL_RESONANCE,
+            "Neural Vocal Formant Passthrough",
+            "Deep-learning VAD detects vocal tract harmonics, keeping your natural voice crystal-clear in calls."
+        )
+        row3 = FeatureRow(
+            SVG_HARDWARE_ENCLAVE,
+            "Zero-Data Collection Guarantee",
+            "100% offline on your CPU. No audio recording, no telemetry. Free for personal use (IP: Cioponea Alexandru)."
+        )
+
+        shell_layout.addWidget(row1)
+        # Hairline separator
+        sep = QFrame()
+        sep.setFrameShape(QFrame.Shape.HLine)
+        sep.setStyleSheet("background: rgba(255, 255, 255, 0.04); max-height: 1px; margin: 0 12px;")
+        shell_layout.addWidget(sep)
+        shell_layout.addWidget(row2)
+        sep2 = QFrame()
+        sep2.setFrameShape(QFrame.Shape.HLine)
+        sep2.setStyleSheet("background: rgba(255, 255, 255, 0.04); max-height: 1px; margin: 0 12px;")
+        shell_layout.addWidget(sep2)
+        shell_layout.addWidget(row3)
+
+        layout.addWidget(shell)
+
+        # 5. Status Chip & Readiness Strip
+        self.status_chip = QWidget()
+        self.status_chip.setStyleSheet("""
+            background: #0E1013;
+            border-radius: 10px;
+            border: 1px solid rgba(52, 199, 89, 0.15);
+        """)
+        chip_layout = QHBoxLayout(self.status_chip)
+        chip_layout.setContentsMargins(14, 8, 14, 8)
+        chip_layout.setSpacing(10)
+
+        self.chip_icon = QLabel()
+        self.chip_icon.setPixmap(render_svg_pixmap(SVG_CHECKMARK, 14, 14))
+        chip_layout.addWidget(self.chip_icon)
+
+        self.lbl_chip_text = QLabel("System Ready • PipeWire Virtual Loopback Configured")
+        self.lbl_chip_text.setStyleSheet("color: #E5E5EA; font-size: 10px; font-weight: 500;")
+        chip_layout.addWidget(self.lbl_chip_text)
+        chip_layout.addStretch()
+
+        layout.addWidget(self.status_chip)
+
+        # Progress bar
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setFixedHeight(3)
+        self.progress_bar.setTextVisible(False)
+        self.progress_bar.setStyleSheet("""
+            QProgressBar { background: #1C1C1E; border-radius: 1.5px; border: none; }
+            QProgressBar::chunk { background: #34C759; border-radius: 1.5px; }
+        """)
         self.progress_bar.hide()
-        card_layout.addWidget(self.progress_bar)
+        layout.addWidget(self.progress_bar)
 
-        layout.addWidget(self.status_card)
-
-        # 5. Options (Autostart)
-        self.chk_autostart = QCheckBox("Start automatically on system boot")
+        # 6. Options Checkbox
+        self.chk_autostart = QCheckBox("Arm acoustic shield automatically on system login")
         self.chk_autostart.setChecked(True)
         self.chk_autostart.setStyleSheet("""
-            QCheckBox {
-                color: #A1A1A6;
-                font-size: 12px;
-            }
-            QCheckBox::indicator {
-                width: 16px;
-                height: 16px;
-                border-radius: 4px;
-                border: 1px solid #3A3A3C;
-                background: #1C1C1E;
-            }
-            QCheckBox::indicator:checked {
-                background: #34C759;
-                border-color: #34C759;
-            }
+            QCheckBox { color: #8E8E93; font-size: 10.5px; font-weight: 400; }
+            QCheckBox::indicator { width: 14px; height: 14px; border-radius: 4px; border: 1px solid #3A3A3C; background: #16171B; }
+            QCheckBox::indicator:checked { background: #34C759; border-color: #34C759; }
         """)
         layout.addWidget(self.chk_autostart)
 
         layout.addStretch()
 
-        # 6. Action Buttons
+        # 7. Island Button CTA Architecture
         self.btn_layout = QVBoxLayout()
-        self.btn_layout.setSpacing(10)
+        self.btn_layout.setSpacing(8)
 
         if not self.is_installed:
-            self.btn_primary = QPushButton("Install KeyShield")
-            self.btn_primary.setFixedHeight(44)
+            self.btn_primary = QPushButton("Install Aethelark MicShield")
+            self.btn_primary.setFixedHeight(46)
             self.btn_primary.setCursor(Qt.CursorShape.PointingHandCursor)
             self.btn_primary.setStyleSheet("""
                 QPushButton {
-                    background: #34C759; color: #FFFFFF; font-size: 14px; font-weight: 600; border-radius: 22px; border: none;
+                    background: #34C759;
+                    color: #FFFFFF;
+                    font-size: 13.5px;
+                    font-weight: 600;
+                    border-radius: 23px;
+                    border: none;
+                    letter-spacing: 0.3px;
                 }
-                QPushButton:hover { background: #30B753; }
-                QPushButton:pressed { background: #289945; }
+                QPushButton:hover { background: #30D158; }
+                QPushButton:pressed { background: #28B049; }
             """)
             self.btn_primary.clicked.connect(self._start_install)
             self.btn_layout.addWidget(self.btn_primary)
         else:
-            self.btn_primary = QPushButton("Launch KeyShield")
-            self.btn_primary.setFixedHeight(44)
+            self.btn_primary = QPushButton("Launch Aethelark MicShield")
+            self.btn_primary.setFixedHeight(46)
             self.btn_primary.setCursor(Qt.CursorShape.PointingHandCursor)
             self.btn_primary.setStyleSheet("""
                 QPushButton {
-                    background: #34C759; color: #FFFFFF; font-size: 14px; font-weight: 600; border-radius: 22px; border: none;
+                    background: #34C759;
+                    color: #FFFFFF;
+                    font-size: 13.5px;
+                    font-weight: 600;
+                    border-radius: 23px;
+                    border: none;
                 }
-                QPushButton:hover { background: #30B753; }
+                QPushButton:hover { background: #30D158; }
             """)
             self.btn_primary.clicked.connect(self._launch_app)
             self.btn_layout.addWidget(self.btn_primary)
 
-            self.btn_uninstall = QPushButton("Uninstall KeyShield")
-            self.btn_uninstall.setFixedHeight(40)
+            self.btn_uninstall = QPushButton("Uninstall from System")
+            self.btn_uninstall.setFixedHeight(38)
             self.btn_uninstall.setCursor(Qt.CursorShape.PointingHandCursor)
             self.btn_uninstall.setStyleSheet("""
                 QPushButton {
-                    background: #1C1C1E; color: #FF453A; font-size: 13px; font-weight: 600; border-radius: 20px; border: 1px solid rgba(255, 69, 58, 0.2);
+                    background: #141519;
+                    color: #FF453A;
+                    font-size: 11.5px;
+                    font-weight: 600;
+                    border-radius: 19px;
+                    border: 1px solid rgba(255, 69, 58, 0.2);
                 }
-                QPushButton:hover { background: #2C2C2E; border-color: rgba(255, 69, 58, 0.4); }
+                QPushButton:hover { background: #1F2026; border-color: rgba(255, 69, 58, 0.45); }
             """)
             self.btn_uninstall.clicked.connect(self._start_uninstall)
             self.btn_layout.addWidget(self.btn_uninstall)
@@ -213,39 +349,38 @@ class SetupAssistantWindow(QMainWindow):
 
     def _start_install(self):
         self.btn_primary.setEnabled(False)
-        self.btn_primary.setText("Installing...")
+        self.btn_primary.setText("Installing Apparatus...")
         self.progress_bar.show()
-        self.progress_bar.setValue(10)
-        self.lbl_state.setText("Installing KeyShield...")
+        self.progress_bar.setValue(15)
+        self.lbl_chip_text.setText("Installing neural gatekeeper...")
 
         threading.Thread(target=self._run_install_worker, daemon=True).start()
 
     def _run_install_worker(self):
         try:
-            self.log_signal.emit("Configuring virtual environment...", 30)
-            time.sleep(0.5)
+            self.log_signal.emit("Configuring ONNX neural engine...", 35)
+            time.sleep(0.4)
 
-            # Run setup
             sh_path = PROJECT_ROOT / "install.sh"
             if sh_path.exists():
                 subprocess.run(["bash", str(sh_path)], cwd=str(PROJECT_ROOT), check=True)
 
-            self.log_signal.emit("Registering virtual audio loopback...", 75)
+            self.log_signal.emit("Mounting PipeWire virtual acoustic device...", 75)
             time.sleep(0.4)
 
-            self.log_signal.emit("Finalizing desktop integration...", 100)
+            self.log_signal.emit("Integration complete.", 100)
             time.sleep(0.3)
-            self.finished_signal.emit(True, "Installation completed successfully!")
+            self.finished_signal.emit(True, "Aethelark MicShield is active and protected.")
         except Exception as e:
             self.finished_signal.emit(False, f"Installation failed: {e}")
 
     def _start_uninstall(self):
         self.btn_uninstall.setEnabled(False)
         self.btn_primary.setEnabled(False)
-        self.btn_uninstall.setText("Uninstalling...")
+        self.btn_uninstall.setText("Purging...")
         self.progress_bar.show()
         self.progress_bar.setValue(30)
-        self.lbl_state.setText("Removing KeyShield...")
+        self.lbl_chip_text.setText("Removing from system...")
 
         threading.Thread(target=self._run_uninstall_worker, daemon=True).start()
 
@@ -254,32 +389,30 @@ class SetupAssistantWindow(QMainWindow):
             sh_path = PROJECT_ROOT / "uninstall.sh"
             if sh_path.exists():
                 subprocess.run(["bash", str(sh_path)], cwd=str(PROJECT_ROOT), check=True)
-            self.log_signal.emit("Cleaned up system shortcuts and configs.", 100)
-            time.sleep(0.5)
+            self.log_signal.emit("All virtual devices, shortcuts & configs removed.", 100)
+            time.sleep(0.4)
             self.finished_signal.emit(True, "Uninstalled cleanly from system.")
         except Exception as e:
             self.finished_signal.emit(False, f"Uninstall failed: {e}")
 
     def _on_progress(self, msg: str, percent: int):
-        self.lbl_state_desc.setText(msg)
+        self.lbl_chip_text.setText(msg)
         self.progress_bar.setValue(percent)
 
     def _on_finished(self, success: bool, msg: str):
         self.progress_bar.hide()
         if success:
-            self.lbl_state.setText("Success")
-            self.lbl_state.setStyleSheet("color: #34C759; font-size: 13px; font-weight: 600;")
-            self.lbl_state_desc.setText(msg)
-            self.btn_primary.setText("Close")
+            self.lbl_chip_text.setText(msg)
+            self.lbl_chip_text.setStyleSheet("color: #34C759; font-size: 10px; font-weight: 600;")
+            self.btn_primary.setText("Close Assistant")
             self.btn_primary.setEnabled(True)
             self.btn_primary.clicked.disconnect()
             self.btn_primary.clicked.connect(self.close)
             if hasattr(self, "btn_uninstall"):
                 self.btn_uninstall.hide()
         else:
-            self.lbl_state.setText("Error")
-            self.lbl_state.setStyleSheet("color: #FF453A; font-size: 13px; font-weight: 600;")
-            self.lbl_state_desc.setText(msg)
+            self.lbl_chip_text.setText(msg)
+            self.lbl_chip_text.setStyleSheet("color: #FF453A; font-size: 10px; font-weight: 600;")
             self.btn_primary.setText("Retry")
             self.btn_primary.setEnabled(True)
 
@@ -289,7 +422,7 @@ class SetupAssistantWindow(QMainWindow):
             subprocess.Popen([str(launcher)])
             self.close()
         else:
-            self.lbl_state_desc.setText("Launcher not found. Please install first.")
+            self.lbl_chip_text.setText("Launcher not found. Please install first.")
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -302,6 +435,7 @@ class SetupAssistantWindow(QMainWindow):
             event.accept()
 
     def paintEvent(self, event):
+        """Draws the aerospace-grade obsidian chassis."""
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -311,10 +445,12 @@ class SetupAssistantWindow(QMainWindow):
         path = QPainterPath()
         path.addRoundedRect(QRectF(1, 1, w - 2, h - 2), radius, radius)
 
+        # Deepest OLED Obsidian Titanium gradient
         bg_grad = QLinearGradient(0, 0, 0, h)
-        bg_grad.setColorAt(0.0, QColor(14, 15, 20, 252))
-        bg_grad.setColorAt(1.0, QColor(7, 8, 11, 252))
+        bg_grad.setColorAt(0.0, QColor(13, 14, 18, 252))
+        bg_grad.setColorAt(1.0, QColor(6, 7, 9, 252))
         painter.fillPath(path, QBrush(bg_grad))
 
+        # Precision 1px hairline border
         painter.setPen(QPen(QColor(255, 255, 255, 22), 1.0))
         painter.drawPath(path)

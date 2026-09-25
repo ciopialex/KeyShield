@@ -242,13 +242,16 @@ class KeyShieldWindow(QMainWindow):
         super().__init__(parent)
         self.shield_engine = shield_engine
 
-        # Frameless, translucent Apple obsidian styling
+        self.setWindowTitle("Aethelark MicShield")
+        self.setWindowIcon(create_shield_icon(True))
+
+        # Frameless, translucent Apple obsidian styling with taskbar presence
         self.setWindowFlags(
-            Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.Window
+            Qt.WindowType.Window
+            | Qt.WindowType.FramelessWindowHint
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.setFixedSize(330, 470)
+        self.setFixedSize(340, 480)
 
         self._drag_pos = QPoint()
 
@@ -276,13 +279,14 @@ class KeyShieldWindow(QMainWindow):
         title_col = QVBoxLayout()
         title_col.setSpacing(2)
 
-        lbl_title = QLabel("KeyShield")
-        lbl_title.setStyleSheet("color: #FFFFFF; font-size: 19px; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;")
+        lbl_title = QLabel("Aethelark MicShield")
+        lbl_title.setStyleSheet("color: #FFFFFF; font-size: 18px; font-weight: 700; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;")
         title_col.addWidget(lbl_title)
 
         lbl_sub = QLabel("ACOUSTIC KEYSTROKE DEFENSE")
         lbl_sub.setStyleSheet("color: #86868B; font-size: 8px; font-weight: 700; letter-spacing: 1.5px;")
         title_col.addWidget(lbl_sub)
+
 
         header.addLayout(title_col)
         header.addStretch()
