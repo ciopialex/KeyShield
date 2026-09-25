@@ -100,7 +100,7 @@ class TactileSwitch(QWidget):
 
         # Track background
         if self._checked:
-            track_color = QColor(52, 199, 89)  # Apple Cupertino Emerald
+            track_color = QColor(56, 158, 98)  # Muted Titanium Emerald
         else:
             track_color = QColor(44, 44, 48)   # Apple Dark Graphite
 
@@ -171,10 +171,10 @@ class AcousticShieldOrb(QWidget):
             glow_grad.setColorAt(0.0, QColor(255, 159, 10, alpha))
             glow_grad.setColorAt(1.0, QColor(0, 0, 0, 0))
         elif self.is_voice:
-            glow_grad.setColorAt(0.0, QColor(52, 199, 89, 160))
+            glow_grad.setColorAt(0.0, QColor(56, 158, 98, 160))
             glow_grad.setColorAt(1.0, QColor(0, 0, 0, 0))
         else:
-            glow_grad.setColorAt(0.0, QColor(52, 199, 89, 60))
+            glow_grad.setColorAt(0.0, QColor(56, 158, 98, 60))
             glow_grad.setColorAt(1.0, QColor(0, 0, 0, 0))
 
         painter.setPen(Qt.PenStyle.NoPen)
@@ -191,7 +191,7 @@ class AcousticShieldOrb(QWidget):
             body_grad.setColorAt(1.0, QColor(10, 14, 12))
 
         painter.setBrush(QBrush(body_grad))
-        ring_color = QColor(52, 199, 89, 200) if self.is_armed else QColor(80, 80, 85, 120)
+        ring_color = QColor(56, 158, 98, 200) if self.is_armed else QColor(80, 80, 85, 120)
         if self.keystroke_flash > 0.1:
             ring_color = QColor(255, 159, 10, 240)
         painter.setPen(QPen(ring_color, 2.0))
@@ -201,7 +201,7 @@ class AcousticShieldOrb(QWidget):
         # If voice is passing: draw harmonic vocal rings
         if self.is_voice and self.is_armed:
             painter.setPen(Qt.PenStyle.NoPen)
-            painter.setBrush(QColor(52, 199, 89, 220))
+            painter.setBrush(QColor(56, 158, 98, 220))
             num_bars = 5
             for i in range(num_bars):
                 bx = cx - 22 + (i * 11)
@@ -225,8 +225,9 @@ class AcousticShieldOrb(QWidget):
                 icon_pen = QPen(QColor(255, 159, 10), 2.0)
                 icon_fill = QColor(255, 159, 10, 40)
             else:
-                icon_pen = QPen(QColor(52, 199, 89), 2.0)
-                icon_fill = QColor(52, 199, 89, 40)
+                icon_pen = QPen(QColor(56, 158, 98), 2.0)
+                icon_fill = QColor(56, 158, 98, 40)
+
 
             painter.setPen(icon_pen)
             painter.setBrush(QBrush(icon_fill))
@@ -328,7 +329,7 @@ class KeyShieldWindow(QMainWindow):
         # 3. Status Badge & Description
         self.lbl_status = QLabel("PROTECTED")
         self.lbl_status.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.lbl_status.setStyleSheet("color: #34C759; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
+        self.lbl_status.setStyleSheet("color: #389E62; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
         layout.addWidget(self.lbl_status)
 
         self.lbl_desc = QLabel("Keyboard acoustic mapping blocked.\nHuman voice passes with zero loss.")
@@ -387,7 +388,7 @@ class KeyShieldWindow(QMainWindow):
         lbl_c2_t = QLabel("LATENCY")
         lbl_c2_t.setStyleSheet("color: #636366; font-size: 8px; font-weight: 700; letter-spacing: 1px;")
         lbl_c2_val = QLabel("0.25 ms")
-        lbl_c2_val.setStyleSheet("color: #34C759; font-size: 18px; font-weight: 700; font-family: -apple-system, monospace;")
+        lbl_c2_val.setStyleSheet("color: #389E62; font-size: 18px; font-weight: 700; font-family: -apple-system, monospace;")
         c2_layout.addWidget(lbl_c2_t)
         c2_layout.addWidget(lbl_c2_val)
         metrics_row.addWidget(c2)
@@ -407,7 +408,7 @@ class KeyShieldWindow(QMainWindow):
         self.orb.set_armed(checked)
         if checked:
             self.lbl_status.setText("PROTECTED")
-            self.lbl_status.setStyleSheet("color: #34C759; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
+            self.lbl_status.setStyleSheet("color: #389E62; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
             self.lbl_desc.setText("Keyboard acoustic mapping blocked.\nHuman voice passes with zero loss.")
             self.lbl_sw_sub.setText("Active defense running")
         else:
@@ -423,13 +424,14 @@ class KeyShieldWindow(QMainWindow):
         if self.shield_engine.is_armed:
             if is_voice:
                 self.lbl_status.setText("VOICE DETECTED")
-                self.lbl_status.setStyleSheet("color: #34C759; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
+                self.lbl_status.setStyleSheet("color: #389E62; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
             elif key_blocked:
                 self.lbl_status.setText("KEYSTROKE DEFLECTED")
                 self.lbl_status.setStyleSheet("color: #FF9F0A; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
             else:
                 self.lbl_status.setText("PROTECTED")
-                self.lbl_status.setStyleSheet("color: #34C759; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
+                self.lbl_status.setStyleSheet("color: #389E62; font-size: 13px; font-weight: 700; letter-spacing: 2px;")
+
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:

@@ -26,7 +26,7 @@ def create_shield_icon(active: bool = True) -> QIcon:
     path.quadTo(cx - 18, cy + 12, cx - 18, cy - 10)
     path.closeSubpath()
 
-    color = QColor(52, 199, 89) if active else QColor(142, 142, 147)
+    color = QColor(56, 158, 98) if active else QColor(142, 142, 147)
     painter.setPen(QPen(color, 4.0, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin))
     painter.setBrush(QColor(color.red(), color.green(), color.blue(), 60))
     painter.drawPath(path)
@@ -62,7 +62,7 @@ class KeyShieldTray(QSystemTrayIcon):
             }
             QMenu::item:selected {
                 background-color: #2C2C2E;
-                color: #34C759;
+                color: #389E62;
             }
         """)
 

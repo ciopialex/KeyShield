@@ -13,17 +13,17 @@ from PyQt6.QtSvg import QSvgRenderer
 SVG_AETHELARK_SHIELD = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
   <defs>
     <radialGradient id="shieldGlow" cx="50%" cy="45%" r="50%">
-      <stop offset="0%" stop-color="#34C759" stop-opacity="0.35"/>
-      <stop offset="60%" stop-color="#30D158" stop-opacity="0.10"/>
+      <stop offset="0%" stop-color="#389E62" stop-opacity="0.30"/>
+      <stop offset="60%" stop-color="#2E8B57" stop-opacity="0.08"/>
       <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="shieldBorder" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#34C759"/>
-      <stop offset="50%" stop-color="#30D158" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="#0A84FF" stop-opacity="0.3"/>
+      <stop offset="0%" stop-color="#389E62"/>
+      <stop offset="50%" stop-color="#2E8B57" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0A84FF" stop-opacity="0.25"/>
     </linearGradient>
     <linearGradient id="facetHighlight" x1="30" y1="20" x2="60" y2="90" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.25"/>
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22"/>
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.0"/>
     </linearGradient>
   </defs>
@@ -44,16 +44,16 @@ SVG_AETHELARK_SHIELD = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1
   <!-- Inner Neural Core Aperture -->
   <path d="M60 32L78 40C78 61 70 77 60 84C50 77 42 61 42 40L60 32Z" 
         fill="#070908" 
-        stroke="#34C759" 
+        stroke="#389E62" 
         stroke-width="1.2" 
         stroke-opacity="0.6"/>
 
   <!-- Center Waveform Spine (Vocal Resonance Gateway) -->
-  <line x1="60" y1="46" x2="60" y2="70" stroke="#34C759" stroke-width="2.5" stroke-linecap="round"/>
-  <line x1="53" y1="51" x2="53" y2="65" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
-  <line x1="67" y1="51" x2="67" y2="65" stroke="#34C759" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
-  <line x1="47" y1="55" x2="47" y2="61" stroke="#34C759" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
-  <line x1="73" y1="55" x2="73" y2="61" stroke="#34C759" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
+  <line x1="60" y1="46" x2="60" y2="70" stroke="#389E62" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="53" y1="51" x2="53" y2="65" stroke="#389E62" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
+  <line x1="67" y1="51" x2="67" y2="65" stroke="#389E62" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
+  <line x1="47" y1="55" x2="47" y2="61" stroke="#389E62" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
+  <line x1="73" y1="55" x2="73" y2="61" stroke="#389E62" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.4"/>
 </svg>"""
 
 # 2. Keystroke Deflection Vector Icon (Acoustic impulse transient reflected at shield barrier)
@@ -64,30 +64,30 @@ SVG_KEYSTROKE_DEFLECT = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 
   <!-- Sound spikes coming off keycap -->
   <path d="M12 12.5L14 11.5M12 16.5L14 17.5" stroke="#FF9F0A" stroke-width="1.5" stroke-linecap="round"/>
   <!-- Energy Shield Deflection Wall -->
-  <path d="M17 5V19" stroke="#34C759" stroke-width="2" stroke-linecap="round"/>
+  <path d="M17 5V19" stroke="#389E62" stroke-width="2" stroke-linecap="round"/>
   <!-- Deflected trajectory -->
   <path d="M14.5 14.5L16.5 14.5L14.5 12" stroke="#FF9F0A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M21 9L18.5 12L21 15" stroke="#34C759" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 2"/>
+  <path d="M21 9L18.5 12L21 15" stroke="#389E62" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 2"/>
 </svg>"""
 
 # 3. Biometric Vocal Resonance Vector Icon (Formant harmonics flowing unobstructed)
 SVG_VOCAL_RESONANCE = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
   <!-- Dynamic Vocal Wave Bands -->
   <path d="M3 12C4.5 10 5.5 10 7 12C8.5 14 9.5 14 11 12C12.5 10 13.5 10 15 12C16.5 14 17.5 14 19 12C20 10.5 21 11 22 12" 
-        stroke="#34C759" stroke-width="1.6" stroke-linecap="round"/>
+        stroke="#389E62" stroke-width="1.6" stroke-linecap="round"/>
   <path d="M5 8C6.5 6.5 7.5 6.5 9 8C10.5 9.5 11.5 9.5 13 8C14.5 6.5 15.5 6.5 17 8" 
-        stroke="#34C759" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.6"/>
+        stroke="#389E62" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.6"/>
   <path d="M5 16C6.5 17.5 7.5 17.5 9 16C10.5 14.5 11.5 14.5 13 16C14.5 17.5 15.5 17.5 17 16" 
-        stroke="#34C759" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.6"/>
+        stroke="#389E62" stroke-width="1.4" stroke-linecap="round" stroke-opacity="0.6"/>
 </svg>"""
 
 # 4. Zero-Cloud Local Hardware Enclave Vector Icon
 SVG_HARDWARE_ENCLAVE = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
   <!-- Silicon Processor Package -->
-  <rect x="5" y="5" width="14" height="14" rx="2.5" stroke="#34C759" stroke-width="1.5" fill="#0E120F"/>
+  <rect x="5" y="5" width="14" height="14" rx="2.5" stroke="#389E62" stroke-width="1.5" fill="#0E120F"/>
   <!-- Enclave Lock core -->
-  <rect x="9" y="11" width="6" height="5" rx="1" stroke="#34C759" stroke-width="1.3"/>
-  <path d="M10 11V9.5C10 8.4 10.9 7.5 12 7.5C13.1 7.5 14 8.4 14 9.5V11" stroke="#34C759" stroke-width="1.3"/>
+  <rect x="9" y="11" width="6" height="5" rx="1" stroke="#389E62" stroke-width="1.3"/>
+  <path d="M10 11V9.5C10 8.4 10.9 7.5 12 7.5C13.1 7.5 14 8.4 14 9.5V11" stroke="#389E62" stroke-width="1.3"/>
   <!-- Disconnected Air-Gap Pins (Zero cloud egress) -->
   <line x1="9" y1="2" x2="9" y2="4.5" stroke="#636366" stroke-width="1.2" stroke-linecap="round"/>
   <line x1="15" y1="2" x2="15" y2="4.5" stroke="#636366" stroke-width="1.2" stroke-linecap="round"/>
@@ -101,8 +101,9 @@ SVG_HARDWARE_ENCLAVE = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2
 
 # 5. Checkmark Glyph (1.5px clean geometric check)
 SVG_CHECKMARK = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">
-  <path d="M3.5 8.5L6.5 11.5L12.5 5" stroke="#34C759" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M3.5 8.5L6.5 11.5L12.5 5" stroke="#389E62" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>"""
+
 
 # 6. Action Arrow Button Glyph
 SVG_ARROW_RIGHT = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none">

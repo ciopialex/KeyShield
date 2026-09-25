@@ -143,9 +143,9 @@ class SetupAssistantWindow(QMainWindow):
 
         eyebrow = QLabel("AETHELARK APPARATUS")
         eyebrow.setStyleSheet("""
-            color: #34C759;
-            background: rgba(52, 199, 89, 0.12);
-            border: 1px solid rgba(52, 199, 89, 0.25);
+            color: #389E62;
+            background: rgba(56, 158, 98, 0.12);
+            border: 1px solid rgba(56, 158, 98, 0.22);
             border-radius: 10px;
             padding: 3px 8px;
             font-size: 8px;
@@ -247,7 +247,7 @@ class SetupAssistantWindow(QMainWindow):
         self.status_chip.setStyleSheet("""
             background: #0E1013;
             border-radius: 10px;
-            border: 1px solid rgba(52, 199, 89, 0.15);
+            border: 1px solid rgba(56, 158, 98, 0.16);
         """)
         chip_layout = QHBoxLayout(self.status_chip)
         chip_layout.setContentsMargins(14, 8, 14, 8)
@@ -270,7 +270,7 @@ class SetupAssistantWindow(QMainWindow):
         self.progress_bar.setTextVisible(False)
         self.progress_bar.setStyleSheet("""
             QProgressBar { background: #1C1C1E; border-radius: 1.5px; border: none; }
-            QProgressBar::chunk { background: #34C759; border-radius: 1.5px; }
+            QProgressBar::chunk { background: #389E62; border-radius: 1.5px; }
         """)
         self.progress_bar.hide()
         layout.addWidget(self.progress_bar)
@@ -281,7 +281,7 @@ class SetupAssistantWindow(QMainWindow):
         self.chk_autostart.setStyleSheet("""
             QCheckBox { color: #8E8E93; font-size: 10.5px; font-weight: 400; }
             QCheckBox::indicator { width: 14px; height: 14px; border-radius: 4px; border: 1px solid #3A3A3C; background: #16171B; }
-            QCheckBox::indicator:checked { background: #34C759; border-color: #34C759; }
+            QCheckBox::indicator:checked { background: #2E8B57; border-color: #389E62; }
         """)
         layout.addWidget(self.chk_autostart)
 
@@ -297,7 +297,7 @@ class SetupAssistantWindow(QMainWindow):
             self.btn_primary.setCursor(Qt.CursorShape.PointingHandCursor)
             self.btn_primary.setStyleSheet("""
                 QPushButton {
-                    background: #34C759;
+                    background: #2E8B57;
                     color: #FFFFFF;
                     font-size: 13.5px;
                     font-weight: 600;
@@ -305,8 +305,8 @@ class SetupAssistantWindow(QMainWindow):
                     border: none;
                     letter-spacing: 0.3px;
                 }
-                QPushButton:hover { background: #30D158; }
-                QPushButton:pressed { background: #28B049; }
+                QPushButton:hover { background: #349D63; }
+                QPushButton:pressed { background: #257548; }
             """)
             self.btn_primary.clicked.connect(self._start_install)
             self.btn_layout.addWidget(self.btn_primary)
@@ -316,17 +316,18 @@ class SetupAssistantWindow(QMainWindow):
             self.btn_primary.setCursor(Qt.CursorShape.PointingHandCursor)
             self.btn_primary.setStyleSheet("""
                 QPushButton {
-                    background: #34C759;
+                    background: #2E8B57;
                     color: #FFFFFF;
                     font-size: 13.5px;
                     font-weight: 600;
                     border-radius: 23px;
                     border: none;
                 }
-                QPushButton:hover { background: #30D158; }
+                QPushButton:hover { background: #349D63; }
             """)
             self.btn_primary.clicked.connect(self._launch_app)
             self.btn_layout.addWidget(self.btn_primary)
+
 
             self.btn_uninstall = QPushButton("Uninstall from System")
             self.btn_uninstall.setFixedHeight(38)
@@ -403,7 +404,7 @@ class SetupAssistantWindow(QMainWindow):
         self.progress_bar.hide()
         if success:
             self.lbl_chip_text.setText(msg)
-            self.lbl_chip_text.setStyleSheet("color: #34C759; font-size: 10px; font-weight: 600;")
+            self.lbl_chip_text.setStyleSheet("color: #389E62; font-size: 10px; font-weight: 600;")
             self.btn_primary.setText("Close Assistant")
             self.btn_primary.setEnabled(True)
             self.btn_primary.clicked.disconnect()
