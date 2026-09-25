@@ -206,10 +206,9 @@ class SetupAssistantWindow(QMainWindow):
                 border: 1px solid rgba(255, 255, 255, 0.06);
             }
         """)
-        shell.setObjectName("Shell")
         shell_layout = QVBoxLayout(shell)
-        shell_layout.setContentsMargins(4, 4, 4, 4)
-        shell_layout.setSpacing(2)
+        shell_layout.setContentsMargins(6, 6, 6, 6)
+        shell_layout.setSpacing(6)
 
         row1 = FeatureRow(
             SVG_KEYSTROKE_DEFLECT,
@@ -228,19 +227,12 @@ class SetupAssistantWindow(QMainWindow):
         )
 
         shell_layout.addWidget(row1)
-        # Hairline separator
-        sep = QFrame()
-        sep.setFrameShape(QFrame.Shape.HLine)
-        sep.setStyleSheet("background: rgba(255, 255, 255, 0.04); max-height: 1px; margin: 0 12px;")
-        shell_layout.addWidget(sep)
         shell_layout.addWidget(row2)
-        sep2 = QFrame()
-        sep2.setFrameShape(QFrame.Shape.HLine)
-        sep2.setStyleSheet("background: rgba(255, 255, 255, 0.04); max-height: 1px; margin: 0 12px;")
-        shell_layout.addWidget(sep2)
         shell_layout.addWidget(row3)
 
         layout.addWidget(shell)
+
+
 
         # 5. Status Chip & Readiness Strip
         self.status_chip = QWidget()
