@@ -20,6 +20,12 @@ Recent breakthroughs in deep learning and signal processing have exposed a criti
 
 State-of-the-art neural acoustic classifiers (e.g., deep convolutional networks and audio spectrogram transformers) can reconstruct typed text—including passwords, encryption keys, private chat messages, and credit card numbers—from ambient microphone audio with **over 95% accuracy**.
 
+This threat was demonstrated in the landmark 2023 study:
+> **"A Practical Deep Learning-Based Acoustic Side Channel Attack on Keyboards"**  
+> *Authors:* Joshua Harrison (Durham University), Dr. Ehsan Toreini (University of Surrey), Dr. Maryam Mehrnezhad (Royal Holloway, University of London)  
+> *Published in:* **IEEE European Symposium on Security and Privacy Workshops (EuroS&PW 2023)** ([arXiv:2308.01074](https://arxiv.org/abs/2308.01074))  
+> *Findings:* The researchers trained a deep learning classifier on keyboard acoustic audio recorded via a nearby smartphone (**95% accuracy**) and over a live **Zoom call** (**93% accuracy**), extracting sensitive typed inputs without requiring malicious software on the target device.
+
 This attack succeeds even when the microphone is built into a laptop bezel or resting on a desk several feet away, operating silently across:
 * Video conference calls (Zoom, Google Meet, Microsoft Teams, Discord, Slack)
 * Web browsers executing background WebRTC audio streams in hidden tabs
