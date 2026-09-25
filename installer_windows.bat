@@ -12,18 +12,28 @@ echo ======================================================================
 
 cd /d "%~dp0"
 
-REM 1. Check Python
-python --version >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [-] Python 3 not found. Please install Python 3.9+ from https://python.org
+REM 1. Detect Python (try python, then py launcher)
+set "PY_CMD="
+where python >nul 2>&1 && set "PY_CMD=python"
+if not defined PY_CMD (
+    where py >nul 2>&1 && set "PY_CMD=py"
+)
+
+if not defined PY_CMD (
+    echo [-] Python 3 not detected on this system.
+    echo [+] Please install Python 3.9+ from https://python.org or the Microsoft Store.
+    echo     (Make sure to check "Add Python to PATH" during installation)
+    echo.
     pause
     exit /b 1
 )
 
+echo [+] Using Python interpreter: %PY_CMD%
+
 REM 2. Virtual Environment Setup
 if not exist ".venv" (
-    echo [+] Creating virtual environment...
-    python -m venv .venv
+    echo [+] Creating virtual environment in .venv...
+    %PY_CMD% -m venv .venv
     call .venv\Scripts\pip.exe install --quiet --upgrade pip
     call .venv\Scripts\pip.exe install --quiet -r requirements.txt
     call .venv\Scripts\pip.exe install --quiet -e .

@@ -59,20 +59,15 @@ Whether from background apps, browser tabs running malicious WebRTC scripts, com
 Users can simply clone or download the repository and double-click their platform installer:
 
 ### 🍏 Linux & macOS
-* **Install:** Double-click or run:
-  ```bash
-  ./installer_linux_mac.sh
-  # or ./installer_linux\&mac.sh
-  ```
-* **Uninstall:** Double-click or run:
-  ```bash
-  ./uninstaller_linux_mac.sh
-  # or ./uninstaller_linux\&mac.sh
-  ```
+* **macOS Finder (Double-Click):** Double-click `installer_macos.command` (to install) or `uninstaller_macos.command` (to uninstall).
+* **Linux / Terminal:**
+  * **Install:** Run `./installer_linux_mac.sh` (or `./installer_linux\&mac.sh`)
+  * **Uninstall:** Run `./uninstaller_linux_mac.sh` (or `./uninstaller_linux\&mac.sh`)
 
 ### 🪟 Windows
 * **Install:** Double-click `installer_windows.bat` in File Explorer.
 * **Uninstall:** Double-click `uninstaller_windows.bat` in File Explorer.
+
 
 Both installers launch the **Aethelark MicShield Setup Assistant** GUI with full taskbar integration and custom vector icons.
 
